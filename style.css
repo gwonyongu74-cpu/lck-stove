@@ -199,3 +199,23 @@ footer {
         padding: 6px;
     }
 }
+/* 잠긴 선수 및 팀 이름 */
+input[type="text"].locked-cell {
+    background: #174d32;
+    border: 1px solid #2da866;
+    color: #7dffad !important;
+    font-weight: bold;
+}
+
+/* 잠긴 칸에 마우스를 올렸을 때 */
+@media (hover: hover) {
+    input[type="text"].locked-cell:hover {
+        background: #20643f;
+    }
+}
+
+/* 잠금 상태에서 입력 칸에 포커스가 있을 때 */
+input[type="text"].locked-cell:focus {
+    background: #20643f;
+    border-color: #55e890;
+}
