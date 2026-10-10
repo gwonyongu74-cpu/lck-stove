@@ -8,40 +8,58 @@ const importFile = document.getElementById("importFile");
 
 const STORAGE_KEY = "lck_stove_league_teams";
 
-const LANES = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
+const LANES = [
+    "TOP",
+    "JUNGLE",
+    "MID",
+    "ADC",
+    "SUPPORT"
+];
 
 let teams = [];
 
-// 새로운 팀 데이터 생성
+/* =========================
+   팀 데이터 생성
+========================= */
+
 function createTeam(name = "") {
     return {
-        name,
+        name: name,
         nameLocked: false,
         players: ["", "", "", "", ""],
         locked: [false, false, false, false, false]
     };
 }
 
-// 기존 저장 데이터와 호환되도록 변환
+/* =========================
+   기존 데이터 호환
+========================= */
+
 function normalizeTeam(team) {
     return {
         name: String(team.name ?? ""),
+
         nameLocked: Boolean(team.nameLocked),
+
         players: LANES.map((_, index) =>
             String(team.players?.[index] ?? "")
         ),
+
         locked: LANES.map((_, index) =>
             Boolean(team.locked?.[index])
         )
     };
 }
 
-// 저장된 데이터 불러오기
+/* =========================
+   저장 데이터 불러오기
+========================= */
+
 function loadTeams() {
     try {
         const savedData = localStorage.getItem(STORAGE_KEY);
 
-        if (savedData) {
+        if (savedData !== null) {
             const parsedData = JSON.parse(savedData);
 
             if (!Array.isArray(parsedData)) {
@@ -51,17 +69,25 @@ function loadTeams() {
             teams = parsedData.map(normalizeTeam);
 
             renderTeams();
-            statusText.textContent = "저장된 데이터를 불러왔습니다.";
+
+            statusText.textContent =
+                "저장된 팀과 선수 정보를 불러왔습니다.";
+
             return;
         }
+
     } catch (error) {
-        statusText.textContent =
-            "데이터를 불러오지 못했습니다. 백업 파일을 확인하세요.";
         teams = [];
+
         renderTeams();
+
+        statusText.textContent =
+            "저장 데이터를 불러오지 못했습니다. 백업 파일을 확인하세요.";
+
         return;
     }
 
+    // 최초 접속 시 기본 팀
     teams = [
         createTeam("T1"),
         createTeam("Gen.G"),
@@ -76,26 +102,65 @@ function loadTeams() {
     renderTeams();
 }
 
-// 잠금 상태에 따라 입력 칸 색상 변경
-function updateLockStyle(input, locked) {
+/* =========================
+   잠금 상태 UI 적용
+========================= */
+
+function updateLockStyle(input, locked, button) {
+    // 초록색 표시
     input.classList.toggle("locked-cell", locked);
 
-    input.title = locked
-        ? "잠금 상태: 클릭하면 잠금 해제"
-        : "잠금 해제 상태: 클릭하면 잠금";
+    // 잠기면 읽기 전용
+    // 잠금 해제하면 수정 가능
+    input.readOnly = locked;
 
-    input.setAttribute("aria-pressed", String(locked));
+    // 접근성 및 안내
+    input.setAttribute("aria-readonly", String(locked));
+
+    input.title = locked
+        ? "잠긴 상태입니다. 자물쇠 버튼으로 잠금을 해제하세요."
+        : "수정할 수 있습니다.";
+
+    // 자물쇠 버튼
+    button.textContent = locked ? "🔒" : "🔓";
+
+    button.title = locked
+        ? "잠금 해제"
+        : "이름 잠금";
+
+    button.setAttribute("aria-label", button.title);
+
+    button.setAttribute("aria-pressed", String(locked));
 }
 
-// 표 그리기
+/* =========================
+   변경사항 안내
+========================= */
+
+function markUnsaved() {
+    statusText.textContent =
+        "변경사항이 있습니다. 저장하기를 눌러주세요.";
+}
+
+/* =========================
+   표 그리기
+========================= */
+
 function renderTeams() {
     teamTable.innerHTML = "";
 
     teams.forEach((team, teamIndex) => {
         const row = document.createElement("tr");
 
-        // 팀 이름
+        /* -------------------------
+           팀 이름
+        ------------------------- */
+
         const teamCell = document.createElement("td");
+
+        const teamWrapper = document.createElement("div");
+        teamWrapper.className = "team-wrapper";
+
         const teamInput = document.createElement("input");
 
         teamInput.type = "text";
@@ -103,25 +168,50 @@ function renderTeams() {
         teamInput.placeholder = "팀 이름";
         teamInput.value = team.name;
 
-        updateLockStyle(teamInput, team.nameLocked);
+        const teamLockButton = document.createElement("button");
 
-        teamInput.addEventListener("click", () => {
-            team.nameLocked = !team.nameLocked;
-            updateLockStyle(teamInput, team.nameLocked);
-            markUnsaved();
-        });
+        teamLockButton.type = "button";
+        teamLockButton.className = "lock-button";
 
+        updateLockStyle(
+            teamInput,
+            team.nameLocked,
+            teamLockButton
+        );
+
+        // 팀 이름 변경
         teamInput.addEventListener("input", event => {
             team.name = event.target.value;
             markUnsaved();
         });
 
-        teamCell.appendChild(teamInput);
+        // 팀 잠금 및 해제
+        teamLockButton.addEventListener("click", () => {
+            team.nameLocked = !team.nameLocked;
+
+            updateLockStyle(
+                teamInput,
+                team.nameLocked,
+                teamLockButton
+            );
+
+            markUnsaved();
+        });
+
+        teamWrapper.append(teamInput, teamLockButton);
+        teamCell.appendChild(teamWrapper);
         row.appendChild(teamCell);
 
-        // 포지션별 선수
+        /* -------------------------
+           라인별 선수 이름
+        ------------------------- */
+
         LANES.forEach((lane, laneIndex) => {
             const cell = document.createElement("td");
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "player-wrapper";
+
             const playerInput = document.createElement("input");
 
             playerInput.type = "text";
@@ -129,39 +219,62 @@ function renderTeams() {
             playerInput.placeholder = lane;
             playerInput.value = team.players[laneIndex];
 
+            const lockButton = document.createElement("button");
+
+            lockButton.type = "button";
+            lockButton.className = "lock-button";
+
+            // 현재 잠금 상태 반영
             updateLockStyle(
                 playerInput,
-                team.locked[laneIndex]
+                team.locked[laneIndex],
+                lockButton
             );
 
-            // 클릭하면 잠금 / 잠금 해제
-            playerInput.addEventListener("click", () => {
+            // 선수 이름 변경
+            playerInput.addEventListener("input", event => {
+                // 잠금 상태에서는 데이터 변경도 차단
+                if (team.locked[laneIndex]) {
+                    playerInput.value = team.players[laneIndex];
+                    return;
+                }
+
+                team.players[laneIndex] = event.target.value;
+
+                markUnsaved();
+            });
+
+            // 잠금 및 잠금 해제
+            lockButton.addEventListener("click", () => {
                 team.locked[laneIndex] =
                     !team.locked[laneIndex];
 
                 updateLockStyle(
                     playerInput,
-                    team.locked[laneIndex]
+                    team.locked[laneIndex],
+                    lockButton
                 );
 
                 markUnsaved();
             });
 
-            playerInput.addEventListener("input", event => {
-                team.players[laneIndex] = event.target.value;
-                markUnsaved();
-            });
+            wrapper.append(playerInput, lockButton);
 
-            cell.appendChild(playerInput);
+            cell.appendChild(wrapper);
             row.appendChild(cell);
         });
 
-        // 팀 삭제
+        /* -------------------------
+           팀 삭제
+        ------------------------- */
+
         const deleteCell = document.createElement("td");
+
         const deleteButton = document.createElement("button");
 
-        deleteButton.textContent = "삭제";
+        deleteButton.type = "button";
         deleteButton.className = "delete-button";
+        deleteButton.textContent = "삭제";
 
         deleteButton.addEventListener("click", () => {
             const teamName = teams[teamIndex].name || "이 팀";
@@ -171,7 +284,9 @@ function renderTeams() {
             }
 
             teams.splice(teamIndex, 1);
+
             renderTeams();
+
             markUnsaved();
         });
 
@@ -182,13 +297,10 @@ function renderTeams() {
     });
 }
 
-// 변경사항 안내
-function markUnsaved() {
-    statusText.textContent =
-        "변경사항이 있습니다. 저장하기를 눌러주세요.";
-}
+/* =========================
+   저장하기
+========================= */
 
-// 저장
 function saveTeams() {
     try {
         localStorage.setItem(
@@ -197,50 +309,75 @@ function saveTeams() {
         );
 
         statusText.textContent =
-            "저장 완료! 선수 정보와 잠금 상태가 저장되었습니다.";
+            "저장 완료! 선수 이름과 잠금 상태가 저장되었습니다.";
+
     } catch (error) {
         statusText.textContent =
             "저장에 실패했습니다. 브라우저 저장 공간을 확인하세요.";
     }
 }
 
-// 팀 추가
+saveButton.addEventListener("click", saveTeams);
+
+/* =========================
+   팀 추가
+========================= */
+
 addTeamButton.addEventListener("click", () => {
     teams.push(createTeam(""));
+
     renderTeams();
+
     markUnsaved();
 
     const inputs = teamTable.querySelectorAll(".team-input");
+
     inputs[inputs.length - 1]?.focus();
 });
 
-// 저장 버튼
-saveButton.addEventListener("click", saveTeams);
+/* =========================
+   백업 파일 저장
+========================= */
 
-// 백업 파일 저장
 exportButton.addEventListener("click", () => {
+    const data = JSON.stringify(teams, null, 2);
+
     const blob = new Blob(
-        [JSON.stringify(teams, null, 2)],
+        [data],
         { type: "application/json;charset=utf-8" }
     );
 
     const url = URL.createObjectURL(blob);
+
     const link = document.createElement("a");
 
     link.href = url;
     link.download = "lck-stove-league-backup.json";
+
+    document.body.appendChild(link);
+
     link.click();
 
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    link.remove();
 
-    statusText.textContent = "백업 파일을 저장했습니다.";
+    setTimeout(() => {
+        URL.revokeObjectURL(url);
+    }, 1000);
+
+    statusText.textContent =
+        "백업 파일을 저장했습니다.";
 });
 
-// 백업 파일 불러오기
+/* =========================
+   백업 파일 불러오기
+========================= */
+
 importFile.addEventListener("change", event => {
     const file = event.target.files[0];
 
-    if (!file) return;
+    if (!file) {
+        return;
+    }
 
     const reader = new FileReader();
 
@@ -264,12 +401,16 @@ importFile.addEventListener("change", event => {
                 return normalizeTeam(team);
             });
 
-            if (!confirm("현재 표를 백업 파일의 내용으로 교체할까요?")) {
+            if (!confirm(
+                "현재 표를 백업 파일의 내용으로 교체할까요?"
+            )) {
                 return;
             }
 
             teams = importedTeams;
+
             renderTeams();
+
             saveTeams();
 
         } catch (error) {
@@ -281,8 +422,16 @@ importFile.addEventListener("change", event => {
         importFile.value = "";
     };
 
+    reader.onerror = () => {
+        alert("파일을 읽지 못했습니다.");
+        importFile.value = "";
+    };
+
     reader.readAsText(file);
 });
 
-// 최초 실행
+/* =========================
+   시작
+========================= */
+
 loadTeams();
