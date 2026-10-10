@@ -30,7 +30,7 @@ header p {
 }
 
 main {
-    max-width: 1400px;
+    max-width: 1500px;
     margin: 30px auto;
     padding: 0 18px;
 }
@@ -39,7 +39,7 @@ main {
     display: flex;
     justify-content: space-between;
     gap: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 18px;
 }
 
 button,
@@ -59,6 +59,13 @@ button:hover,
     filter: brightness(1.2);
 }
 
+button:focus-visible,
+.import-button:focus-visible,
+input:focus-visible {
+    outline: 2px solid #e7bd58;
+    outline-offset: 2px;
+}
+
 .save-button {
     background: #c89b3c;
     color: #111;
@@ -67,7 +74,40 @@ button:hover,
 #status {
     color: #aab2bf;
     font-size: 13px;
-    margin: 12px 0;
+    margin: 14px 0;
+    line-height: 1.6;
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 18px 0;
+    color: #c0c7d2;
+    font-size: 13px;
+}
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.legend-color {
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.legend-color.unlocked {
+    background: #0d121a;
+    border: 1px solid #596475;
+}
+
+.legend-color.locked {
+    background: #174d32;
+    border: 1px solid #2da866;
 }
 
 .table-container {
@@ -79,7 +119,7 @@ button:hover,
 
 table {
     width: 100%;
-    min-width: 850px;
+    min-width: 1050px;
     border-collapse: collapse;
     table-layout: fixed;
     background: #151a23;
@@ -105,14 +145,15 @@ tr:last-child td {
 }
 
 .team-column {
-    width: 150px;
+    width: 190px;
 }
 
 .delete-column {
-    width: 65px;
+    width: 75px;
 }
 
 input[type="text"] {
+    display: block;
     width: 100%;
     min-width: 0;
     padding: 11px 8px;
@@ -138,21 +179,84 @@ input[type="text"]:focus {
     text-align: center;
 }
 
+/* 팀 이름과 자물쇠 */
+.team-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.team-wrapper input {
+    flex: 1;
+    width: 0;
+}
+
+/* 선수 이름과 자물쇠 */
+.player-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.player-wrapper input {
+    flex: 1;
+    width: 0;
+}
+
+/* 잠금 버튼 */
+.lock-button {
+    flex-shrink: 0;
+    width: 38px;
+    min-width: 38px;
+    min-height: 38px;
+    padding: 5px;
+    background: #293241;
+    color: white;
+    border: 1px solid #394353;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.lock-button:hover {
+    background: #414d60;
+}
+
+/* 잠긴 입력 칸 */
+input[type="text"].locked-cell {
+    background: #174d32;
+    border: 1px solid #2da866;
+    color: #7dffad !important;
+    font-weight: bold;
+    cursor: not-allowed;
+    opacity: 1;
+    -webkit-text-fill-color: #7dffad;
+}
+
+/* 잠긴 칸에 포커스가 생겨도 초록색 유지 */
+input[type="text"].locked-cell:focus {
+    background: #174d32;
+    border-color: #2da866;
+}
+
+/* 팀 삭제 버튼 */
 .delete-button {
     width: 100%;
-    padding: 9px 5px;
+    padding: 10px 5px;
     background: #572b35;
     color: #ffb8c1;
     font-size: 12px;
 }
 
+/* 안내 문구 */
 .notice {
     color: #8e99a9;
     font-size: 13px;
-    line-height: 1.8;
+    line-height: 1.9;
     margin-top: 18px;
 }
 
+/* 백업 버튼 */
 .bottom-buttons {
     display: flex;
     flex-wrap: wrap;
@@ -163,6 +267,7 @@ input[type="text"]:focus {
 .import-button {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
 }
 
 footer {
@@ -198,24 +303,14 @@ footer {
     td {
         padding: 6px;
     }
-}
-/* 잠긴 선수 및 팀 이름 */
-input[type="text"].locked-cell {
-    background: #174d32;
-    border: 1px solid #2da866;
-    color: #7dffad !important;
-    font-weight: bold;
-}
 
-/* 잠긴 칸에 마우스를 올렸을 때 */
-@media (hover: hover) {
-    input[type="text"].locked-cell:hover {
-        background: #20643f;
+    .lock-button {
+        width: 36px;
+        min-width: 36px;
+        min-height: 40px;
     }
-}
 
-/* 잠금 상태에서 입력 칸에 포커스가 있을 때 */
-input[type="text"].locked-cell:focus {
-    background: #20643f;
-    border-color: #55e890;
+    .legend {
+        gap: 10px;
+    }
 }
