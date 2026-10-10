@@ -1,0 +1,201 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #0b0e13;
+    color: #f1f3f5;
+    font-family: Arial, "Malgun Gothic", sans-serif;
+}
+
+header {
+    background: #151a23;
+    border-bottom: 3px solid #c89b3c;
+    text-align: center;
+    padding: 30px 15px;
+}
+
+header h1 {
+    margin: 0;
+    color: #e7bd58;
+    font-size: 30px;
+    letter-spacing: 2px;
+}
+
+header p {
+    margin: 10px 0 0;
+    color: #aab2bf;
+    font-size: 14px;
+}
+
+main {
+    max-width: 1400px;
+    margin: 30px auto;
+    padding: 0 18px;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+button,
+.import-button {
+    border: none;
+    border-radius: 6px;
+    padding: 12px 18px;
+    background: #293241;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover,
+.import-button:hover {
+    filter: brightness(1.2);
+}
+
+.save-button {
+    background: #c89b3c;
+    color: #111;
+}
+
+#status {
+    color: #aab2bf;
+    font-size: 13px;
+    margin: 12px 0;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #303744;
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+    table-layout: fixed;
+    background: #151a23;
+}
+
+th {
+    background: #202734;
+    color: #e7bd58;
+    padding: 16px 8px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #c89b3c;
+}
+
+td {
+    padding: 8px;
+    border-bottom: 1px solid #303744;
+    border-right: 1px solid #252d39;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+.team-column {
+    width: 150px;
+}
+
+.delete-column {
+    width: 65px;
+}
+
+input[type="text"] {
+    width: 100%;
+    min-width: 0;
+    padding: 11px 8px;
+    border: 1px solid #394353;
+    border-radius: 5px;
+    outline: none;
+    background: #0d121a;
+    color: #f1f3f5;
+    font-size: 14px;
+}
+
+input[type="text"]:focus {
+    border-color: #c89b3c;
+    background: #171e29;
+}
+
+.team-input {
+    color: #e7bd58 !important;
+    font-weight: bold;
+}
+
+.player-input {
+    text-align: center;
+}
+
+.delete-button {
+    width: 100%;
+    padding: 9px 5px;
+    background: #572b35;
+    color: #ffb8c1;
+    font-size: 12px;
+}
+
+.notice {
+    color: #8e99a9;
+    font-size: 13px;
+    line-height: 1.8;
+    margin-top: 18px;
+}
+
+.bottom-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.import-button {
+    display: inline-flex;
+    align-items: center;
+}
+
+footer {
+    margin-top: 60px;
+    padding: 25px 10px;
+    text-align: center;
+    color: #626d7c;
+    font-size: 11px;
+    letter-spacing: 2px;
+    border-top: 1px solid #252d39;
+}
+
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 23px;
+    }
+
+    main {
+        padding: 0 10px;
+        margin-top: 20px;
+    }
+
+    button,
+    .import-button {
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    th {
+        padding: 13px 6px;
+    }
+
+    td {
+        padding: 6px;
+    }
+}
