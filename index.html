@@ -3,68 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>LCK 스토브리그</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <header>
-        <h1>LCK STOVE LEAGUE</h1>
-        <p>나만의 LCK 스토브리그 선수 명단</p>
-    </header>
+<header>
+    <h1>LCK STOVE LEAGUE</h1>
+    <p>나만의 LCK 스토브리그 선수 명단</p>
+</header>
 
-    <main>
-        <div class="toolbar">
-            <button id="addTeamButton">+ 팀 추가</button>
-            <button id="saveButton" class="save-button">저장하기</button>
-        </div>
+<main>
 
-        <p id="status">팀과 선수 이름을 입력하세요.</p>
+    <div class="toolbar">
+        <button type="button" id="addTeamButton">
+            + 팀 추가
+        </button>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th class="team-column">TEAM</th>
-                        <th>TOP</th>
-                        <th>JUNGLE</th>
-                        <th>MID</th>
-                        <th>ADC</th>
-                        <th>SUPPORT</th>
-                        <th class="delete-column">삭제</th>
-                    </tr>
-                </thead>
+        <button type="button" id="saveButton" class="save-button">
+            저장하기
+        </button>
+    </div>
 
-                <tbody id="teamTable">
-                    <!-- JavaScript가 팀 목록을 생성합니다. -->
-                </tbody>
-            </table>
-        </div>
+    <div class="legend">
+        <span class="legend-item">
+            <span class="legend-color unlocked"></span>
+            잠금 해제: 수정 가능
+        </span>
 
-        <p class="notice">
-            선수 이름과 팀 이름을 직접 입력할 수 있습니다.<br>
-            입력한 내용은 저장하기 버튼을 누르면 보관됩니다.
-        </p>
+        <span class="legend-item">
+            <span class="legend-color locked"></span>
+            잠금: 수정 불가
+        </span>
+    </div>
 
-        <div class="bottom-buttons">
-            <button id="exportButton">백업 파일 저장</button>
+    <p id="status" role="status" aria-live="polite">
+        팀과 선수 이름을 입력하세요.
+    </p>
 
-            <label for="importFile" class="import-button">
-                백업 파일 불러오기
-            </label>
-            <input
-                type="file"
-                id="importFile"
-                accept=".json,application/json"
-                hidden
-            >
-        </div>
-    </main>
+    <div class="table-container">
 
-    <footer>
-        LCK STOVE LEAGUE TABLE
-    </footer>
+        <table>
+            <thead>
+                <tr>
+                    <th class="team-column">TEAM</th>
+                    <th>TOP</th>
+                    <th>JUNGLE</th>
+                    <th>MID</th>
+                    <th>ADC</th>
+                    <th>SUPPORT</th>
+                    <th class="delete-column">삭제</th>
+                </tr>
+            </thead>
 
-    <script src="script.js"></script>
+            <tbody id="teamTable"></tbody>
+        </table>
+
+    </div>
+
+    <p class="notice">
+        선수 이름을 입력한 뒤 자물쇠 버튼으로 잠글 수 있습니다.<br>
+        잠긴 칸은 초록색으로 표시되며 이름을 수정할 수 없습니다.<br>
+        중요한 기록은 백업 파일로도 보관하세요.
+    </p>
+
+    <div class="bottom-buttons">
+
+        <button type="button" id="exportButton">
+            백업 파일 저장
+        </button>
+
+        <label for="importFile" class="import-button">
+            백업 파일 불러오기
+        </label>
+
+        <input
+            type="file"
+            id="importFile"
+            accept=".json,application/json"
+            hidden
+        >
+
+    </div>
+
+</main>
+
+<footer>
+    LCK STOVE LEAGUE TABLE
+</footer>
+
+<script src="script.js"></script>
+
 </body>
 </html>
